@@ -45,4 +45,6 @@ if __name__ == "__main__":
         save_sentence(w_path, seibun_list[i])
         print(hibun_list[i])
         save_sentence(w_path, hibun_list[i])
+
+    print(fr"generate test_corpus:{w_path}")
         

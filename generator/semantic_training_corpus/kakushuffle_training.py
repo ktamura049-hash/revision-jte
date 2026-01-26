@@ -17,12 +17,15 @@ corpus_filename = corpus.split('/')[-1]
 
 #h_corpus:出力となる非文コーパス
 #t_corpus:非文が出力された正文コーパス
-h_corpus = 'hibun_corpus/'+corpus_filename
+#n_corpus:非文にならないときはNoneと表示する非文コーパス
+h_corpus = 'hibun_corpus/imihibun'+corpus_filename
 t_corpus = 'seibun_corpus/'+corpus_filename
 n_corpus = 'hibun_corpus/none_'+corpus_filename
 
 remove_file(h_corpus)
 remove_file(t_corpus)
+remove_file(n_corpus)
+
 
 with open(corpus, 'r') as f:
     lines = f.read()

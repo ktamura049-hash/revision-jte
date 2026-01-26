@@ -13,11 +13,18 @@ import sys
 #path
 #corpus:入力とする正文のコーパス
 corpus = sys.argv[1]
+corpus_filename = corpus.split('/')[-1]
+
 #h_corpus:出力となる非文コーパス
-h_corpus = 'hibun_'+ corpus
-#t_corpus = 'seibun_'+corpus
+#t_corpus:非文が出力された正文コーパス
+#n_corpus:非文にならないときはNoneと表示する非文コーパス
+h_corpus = 'hibun_corpus/hibun'+corpus_filename
+#t_corpus = 'seibun_corpus/'+corpus_filename
+n_corpus = 'hibun_corpus/none_'+corpus_filename
+
 remove_file(h_corpus)
 #remove_file(t_corpus)
+remove_file(n_corpus)
 
 with open(corpus, 'r') as f:
     lines = f.read()
@@ -114,6 +121,7 @@ for ram in range(len(lines)):
             c_hisens = c_hisens + w_hisens[i] + '\t'
         #格助詞ごとに毎回作る場合
         save_sentence(h_corpus, c_hisens)
+        save_sentence(n_corpus, c_hisens)
         
         #どれか一つ格助詞を変える時
         #save_sentence(h_corpus, random.choice(w_hisens))
@@ -121,5 +129,5 @@ for ram in range(len(lines)):
     #変更しようがない場合は変更なしと表示
     else:
         print('変更なし')
-        save_sentence(h_corpus, 'None')
+        save_sentence(n_corpus, 'None')
         pass
