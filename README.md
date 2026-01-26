@@ -40,14 +40,66 @@ bunresult3.txtをgenerator内の各ディレクトリ内に入れる
 ```Bash
 ./gen_corpus.sh
 ```
+validフォルダとtestフォルダが作られる
+valid/valid_all.txtはGPT-2のヴァリデーションに使用し、
+testフォルダはそのままgrammatical evaluationに使用する
+
 #### semantic_test_corpus
 ```Bash
 ./gen_semantic_test_corpus.sh
 ```
+作成されたtxtファイルをsemantic evaluationに使用する
 
 #### grammatical_training_corpus
-corpus2hibun.py に引数でコーパスを与えることで、自然文から
 ```Bash
-python corpus2hibun.py train2_100k.txt
-python corpus2hibun.py valid2_10k.txt
+./gen_grammatical_training_corpus.sh
 ```
+同階層のhibun_corpusに非文コーパスが作られる
+
+#### semantic_training_corpus
+```Bash
+./gen_semantic_training_corpus.sh
+```
+同階層のhibun_corpusに非文コーパスが作られる
+
+### experiment
+#### GPT-2
+##### fine-tuning
+experiment/gpt-2/training にrinna japanese-gpt2-mediumをダウンロードする
+```Bash
+git clone https://huggingface.co/rinna/japanese-gpt2-medium
+```
+
+experiment/gpt-2/trainingに元のテキストファイルとgrammatical_training_corpusとsemantic_training_corpusを
+
+下記のスクリプトを実行するとファインチューニングが行える
+```Bash
+./train-margin-pair.sh
+```
+各エポック毎にbinファイルが作成される
+
+##### evaluation
+
+作成されたbinファイルをrinnaのpytorch_model.binと挿げ替える
+
+ヴァリデーションを実施する。下記のコマンドを実行。結果のjsonファイルが作成される
+```Bash
+python gpt2_valid_all_bin.py rinna valid_file margin epoch
+```
+
+作成されたjsonファイルを下記のコマンドで精度を見る
+```Bash
+python gpt2_accuracy_all.py json_file
+```
+
+もっともよい精度のエポックを確認したら
+再度rinna内のPytorch_model.binとそのbinファイルを挿げ替える
+
+コマンドを実行し結果のjsonファイル作成
+```Bash
+python gpt2_sentence_all_sh_change-bin.py rinna/medium/ft-token-margin train-ft4_pair_kouzou_${margin[ix]}-${epoch[ix]} test/test_all_$day/*
+```
+
+最終的な精度を確認する
+```Bash
+./accuracy.sh margin
