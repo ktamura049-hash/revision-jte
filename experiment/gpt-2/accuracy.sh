@@ -1,6 +1,6 @@
 #!/bin/bash
 
-filename=result_20250303_test_$1.txt
+filename=result_test_$1.txt
 rm $filename
 
 # 結果を記録する
