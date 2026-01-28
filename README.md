@@ -1,4 +1,4 @@
-# japanese-targeted-evaluation
+# Japanese-targeted-evaluation
 This repository contains data and evaluation code for the following paper:  
 <Information about the conference/journal to which the paper is submitted>
 
@@ -6,15 +6,14 @@ This repository contains data and evaluation code for the following paper:
 The following must be installed via pip:
 * [PyTorch](https://pytorch.org/)
 
-Case grammar used as the reference:
+Case grammar:
 * [The Kyoto University Case Frame Dictionary](https://nlp.ist.i.kyoto-u.ac.jp/edit.php?%E4%BA%AC%E9%83%BD%E5%A4%A7%E5%AD%A6%E6%A0%BC%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0)
 
-Language models used:
+Language models:
 * [rinna japanese-gpt2-medium](https://huggingface.co/rinna/japanese-gpt2-medium)
 * [Noji and Takamura (2020)](https://github.com/aistairc/lm_syntax_negative)
 
-## HOW TO USE THIS CODE
-### Creating training and test corpora
+## Creating training and test corpora
 
 Place The Kyoto University Case Frame Dictionary (`kaku.xml`) in the `generator` directory and run the following:
 
@@ -53,7 +52,7 @@ Place `bunresult3.txt` into each directory under `generator`.
 
 Run the following command in each folder.
 
-#### grammatical_test_corpus 
+### grammatical_test_corpus 
 ```Bash
 cd generator/grammatical_test_corpus 
 ./gen_grammatical_test_corpus.sh
@@ -63,7 +62,7 @@ The `valid` and `test` directories will be created.
 `valid/valid_all.txt` is used for GPT-2 validation, and  
 the `test` directory is used for grammatical evaluation.
 
-#### semantic_test_corpus
+### semantic_test_corpus
 ```Bash
 cd generator/semantic_test_corpus 
 ./gen_semantic_test_corpus.sh
@@ -71,7 +70,7 @@ cd generator/semantic_test_corpus
 
 Use the generated txt files for semantic evaluation.
 
-#### grammatical_training_corpus
+### grammatical_training_corpus
 ```Bash
 cd generator/grammatical_training_corpus
 ./gen_grammatical_training_corpus.sh
@@ -79,7 +78,7 @@ cd generator/grammatical_training_corpus
 
 An ungrammatical corpus will be created in `hibun_corpus` at the same directory level.
 
-#### semantic_training_corpus
+### semantic_training_corpus
 ```Bash
 cd generator/semantic_training_corpus
 ./gen_semantic_training_corpus.sh
@@ -87,9 +86,9 @@ cd generator/semantic_training_corpus
 
 An ungrammatical corpus will be created in `hibun_corpus` at the same directory level.
 
-### experiment
-#### GPT-2
-##### fine-tuning
+## experiment
+### GPT-2
+#### fine-tuning
 Download `rinna japanese-gpt2-medium` into `experiment/gpt-2/training`:
 
 ```Bash
@@ -108,7 +107,7 @@ Run the following script to perform fine-tuning:
 
 A `.bin` file will be created for each epoch.
 
-##### evaluation
+#### evaluation
 Make a backup copy of `rinna/pytorch_model.bin` beforehand.  
 Overwrite `rinna/pytorch_model.bin` with the generated `.bin` file.
 
@@ -148,7 +147,7 @@ Example: checking the accuracy of
 python gpt2_accuracy_all_csv_2.py probs_all_margintrain-ft4_pair_kouzou_10.0-0_test_simple_l4h0v20_unk.json 
 ```
 
-#### LSTM
+### LSTM
 Download the model from [Noji and Takamura (2020)](https://github.com/aistairc/lm_syntax_negative):
 
 ```Bash
@@ -161,8 +160,8 @@ Place the files in `lm_update` into `lm_syntax_negative/lm`, overwriting duplica
 cp lm_update/* lm_syntax_negative/lm
 ```
 
-##### Preparing corpora
-###### training corpus
+#### Preparing corpora
+##### training corpus
 Create the training corpus.  
 Prepare a corpus of grammatical sentences and a corpus of ungrammatical sentences (None type),  
 and place them in the `data` directory.
@@ -197,10 +196,10 @@ The final contents of the training corpus directory should look like this:
 * negative_agreements.train.txt.gz  
 * negative_agreements.valid.txt.gz  
 
-###### test corpus
+##### test corpus
 All test corpus files must be placed at the same directory level.
 
-##### Running training
+#### Running training
 Create a model trained only on grammatical sentences.
 
 Example: using the training corpus in a directory named `grammatical_corpus`:
@@ -230,7 +229,7 @@ For details, see
 [Training with additional margin losses](https://github.com/aistairc/lm_syntax_negative?tab=readme-ov-file#training-with-additional-margin-losses)  
 in Noji and Takamura (2020).
 
-##### Evaluation
+#### Evaluation
 Example: evaluating `token_margin=10.pt` on `grammatical_test_corpus`:
 
 ```Bash
