@@ -58,9 +58,8 @@ cd generator/grammatical_test_corpus
 ./gen_grammatical_test_corpus.sh
 ```
 
-The `valid` and `test` directories will be created.  
-`valid/valid_all.txt` is used for GPT-2 validation, and  
-the `test` directory is used for grammatical evaluation.
+For grammatical evaluation, the `valid` and `test` directories are created.  
+`valid/valid_all.txt` is used for GPT-2 validation.
 
 ### semantic_test_corpus
 ```Bash
@@ -68,7 +67,7 @@ cd generator/semantic_test_corpus
 ./gen_semantic_test_corpus.sh
 ```
 
-Use the generated txt files for semantic evaluation.
+The created text file is used semantic evaluation.(あとでGPTに聞く)
 
 ### grammatical_training_corpus
 ```Bash
@@ -76,7 +75,7 @@ cd generator/grammatical_training_corpus
 ./gen_grammatical_training_corpus.sh
 ```
 
-An ungrammatical corpus will be created in `hibun_corpus` at the same directory level.
+Ungrammatical corpora are created in `hibun_corpus`.
 
 ### semantic_training_corpus
 ```Bash
@@ -84,11 +83,11 @@ cd generator/semantic_training_corpus
 ./gen_semantic_training_corpus.sh
 ```
 
-An ungrammatical corpus will be created in `hibun_corpus` at the same directory level.
+Ungrammatical corpora are created in `hibun_corpus`.
 
-## experiment
+## Experiment
 ### GPT-2
-#### fine-tuning
+#### Fine-tuning
 Download `rinna japanese-gpt2-medium` into `experiment/gpt-2/training`:
 
 ```Bash
@@ -99,20 +98,27 @@ Place the original text files and the ungrammatical corpora generated from
 `grammatical_training_corpus` and `semantic_training_corpus` into  
 `experiment/gpt-2/training`.
 
+```Bash
+mv ../grammatical_traning_corpus/*train2_100k.txt ./
+mv ../semantic_traning_corpus/*train2_100k.txt ./
+```
+
 Run the following script to perform fine-tuning:
 
 ```Bash
 ./train-margin-pair.sh
 ```
 
-A `.bin` file will be created for each epoch.
+A `.bin` file is created for each epoch.
 
-#### evaluation
-Make a backup copy of `rinna/pytorch_model.bin` beforehand.  
-Overwrite `rinna/pytorch_model.bin` with the generated `.bin` file.
+#### Evaluation
+Overwrite `rinna/pytorch_model.bin` with the generated `.bin` file in fine-tuning.
 
-Run validation. Executing `gpt2_valid_all_bin.py` will generate a JSON file with results.
+Run validation. 
 
+Executing `gpt2_valid_all_bin.py` generates a JSON file with results.
+grammatical_valid.sh (121~137行目までを実行する)
+-------------------------------------------------------------------------------------------------------
 Example: validating a model with margin 10 and epoch 3 using `valid_all.txt`:
 
 ```Bash
@@ -129,11 +135,13 @@ python gpt2_accuracy_all.py probs_medium_margin10.0_3_valid_all.json
 
 After identifying the epoch with the best accuracy,  
 overwrite `Pytorch_model.bin` in `rinna` with that `.bin` file.
+-------------------------------------------------------------------------------------------------------
 
 Run evaluation.
 
 Example: running tests on all files in the `grammatical_test_corpus` directory:
-
+grammatical_eval.sh 10 3（142～154行目までを実行する）
+-------------------------------------------------------------------------------------------------------
 ```Bash
 python gpt2_sentence_all_sh_change-bin.py rinna train-ft4_pair_kouzou_10-3 grammatical_test_corpus/*
 ```
@@ -146,6 +154,10 @@ Example: checking the accuracy of
 ```Bash
 python gpt2_accuracy_all_csv_2.py probs_all_margintrain-ft4_pair_kouzou_10.0-0_test_simple_l4h0v20_unk.json 
 ```
+-------------------------------------------------------------------------------------------------------
+(The same procedure can be applied for semantic evaluation.)
+semantic_valid.sh
+semantic_eval.sh
 
 ### LSTM
 Download the model from [Noji and Takamura (2020)](https://github.com/aistairc/lm_syntax_negative):
@@ -154,24 +166,32 @@ Download the model from [Noji and Takamura (2020)](https://github.com/aistairc/l
 git clone https://github.com/aistairc/lm_syntax_negative
 ```
 
-Place the files in `lm_update` into `lm_syntax_negative/lm`, overwriting duplicates:
+Place the files in `lm_update` into `lm_syntax_negative/lm`, overwriting duplicate files:
 
 ```Bash
 cp lm_update/* lm_syntax_negative/lm
 ```
 
 #### Preparing corpora
-##### training corpus
-Create the training corpus.  
-Prepare a corpus of grammatical sentences and a corpus of ungrammatical sentences (None type),  
+##### Training corpora
+Create the training corpora.  
+Prepare a corpus of grammatical sentences and a corpus of ungrammatical sentences,  
 and place them in the `data` directory.
 
-Run `seihu.py` with the two corpora as arguments to create a negative-agreement txt file.
+```Bash
+./create_grammatical_corpora.sh
+./create_semantic_corpora.sh
+```
 
+---------------------------------------------------------------------------------
+
+Run `seihu.py` with the two corpora as arguments to create a negative-agreement txt file.
 Example: creating from `train2_100k.txt` and `none_train2_100k.txt`:
 
 ```Bash
 cd data
+cp ../../generator/grammatical_training_corpus/train2_100k.txt
+cp ../../generator/grammatical_training_corpus/hibun_corpus/none_train2_100k.txt
 python seihu.py train2_100k.txt none_train2_100k.txt >> negative_agreements.train.txt
 gzip negative_agreements.train.txt
 ```
@@ -187,8 +207,11 @@ mv train2_100k.txt train.txt
 mv valid2_10k.txt valid.txt
 cp valid.txt test.txt
 ```
+---------------------------------------------------------------------------------
 
-The final contents of the training corpus directory should look like this:
+
+
+The final contents of the training corpus directory are:
 
 * train.txt  
 * valid.txt  
@@ -196,8 +219,13 @@ The final contents of the training corpus directory should look like this:
 * negative_agreements.train.txt.gz  
 * negative_agreements.valid.txt.gz  
 
-##### test corpus
-All test corpus files must be placed at the same directory level.
+##### Test corpora
+Move the test corpora to `/experiment
+/lstm/`
+
+```Bash
+cp ../../grammatical_test_corpus/test ./
+```
 
 #### Running training
 Create a model trained only on grammatical sentences.
@@ -212,7 +240,7 @@ python lm/train_lm.py --data grammatical_corpus --save models/lstm.pt --mode sen
     --gpu 0 --seed 1111
 ```
 
-Create a model trained on grammatical–ungrammatical sentence pairs.
+Create a model trained on grammatical and ungrammatical sentence pairs.
 
 Example: using margin 10 with the training corpus in `grammatical_corpus`:
 

@@ -8,7 +8,7 @@ from kakuseiri3 import kakuhyou, kakuhenkan
 from cre_sent import save_sentence, remove_file
 import random
 import copy
-import sys
+import sys,os
 
 #path
 #corpus:入力とする正文のコーパス
@@ -18,6 +18,9 @@ corpus_filename = corpus.split('/')[-1]
 #h_corpus:出力となる非文コーパス
 #t_corpus:非文が出力された正文コーパス
 #n_corpus:非文にならないときはNoneと表示する非文コーパス
+os.makedirs('hibun_corpus', exist_ok=True)
+os.makedirs('seibun_corpus', exist_ok=True)
+
 h_corpus = 'hibun_corpus/hibun'+corpus_filename
 #t_corpus = 'seibun_corpus/'+corpus_filename
 n_corpus = 'hibun_corpus/none_'+corpus_filename
@@ -25,6 +28,7 @@ n_corpus = 'hibun_corpus/none_'+corpus_filename
 remove_file(h_corpus)
 #remove_file(t_corpus)
 remove_file(n_corpus)
+
 
 with open(corpus, 'r') as f:
     lines = f.read()
