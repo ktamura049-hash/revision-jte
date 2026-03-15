@@ -116,26 +116,11 @@ Overwrite `rinna/pytorch_model.bin` with the generated `.bin` file in fine-tunin
 
 Run validation. 
 
-Executing `gpt2_valid_all_bin.py` generates a JSON file with results.
-grammatical_valid.sh (121~137行目までを実行する)
--------------------------------------------------------------------------------------------------------
-Example: validating a model with margin 10 and epoch 3 using `valid_all.txt`:
-
 ```Bash
-python gpt2_valid_all_bin.py rinna valid_all.txt 10 3
+./valid.sh
+./accuracy_valid.sh
 ```
 
-Check the accuracy of the generated JSON file.
-
-Example: checking the accuracy of `probs_medium_margin10.0_3_valid_all.json`:
-
-```Bash
-python gpt2_accuracy_all.py probs_medium_margin10.0_3_valid_all.json
-```
-
-After identifying the epoch with the best accuracy,  
-overwrite `Pytorch_model.bin` in `rinna` with that `.bin` file.
--------------------------------------------------------------------------------------------------------
 
 Run evaluation.
 

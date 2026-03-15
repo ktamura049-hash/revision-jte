@@ -35,7 +35,7 @@ summary(gpt)
 train_corpus = 'not-unk_train2_100k.txt'
 
 #学習コーパス（非文コーパス）
-train_data_path = './imihibun_' + train_corpus
+train_data_path = './hibun_' + train_corpus
 # 意味的非文を学習させるとき
 #train_data_path = './imihibun_train2_100k.txt'
 
