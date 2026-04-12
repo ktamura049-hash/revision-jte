@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# valid correct 
+grammatical_valid.sh
+
+
+# validation for only correct sentence 
 for i in `seq 0 9`
 do
 	# grammatical
@@ -17,7 +20,7 @@ do
 done
 
 
-# valid multi-margin-loss
+# validation for multi-margin-loss
 for margin in 1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0
 do
     for i in `seq 0 9`

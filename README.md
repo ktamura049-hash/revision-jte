@@ -5,6 +5,9 @@ This repository contains data and evaluation code for the following paper:
 ## Requirements
 The following must be installed via pip:
 * [PyTorch](https://pytorch.org/)
+* [TensorFlow](https://www.tensorflow.org/)
+* [Transformers](https://huggingface.co/docs/transformers/index)
+* [MeCab](https://www.mlab.im.dendai.ac.jp/~yamada/ir/MorphologicalAnalyzer/MeCab.html)
 
 Case grammar:
 * [The Kyoto University Case Frame Dictionary](https://nlp.ist.i.kyoto-u.ac.jp/edit.php?%E4%BA%AC%E9%83%BD%E5%A4%A7%E5%AD%A6%E6%A0%BC%E3%83%95%E3%83%AC%E3%83%BC%E3%83%A0)
@@ -28,7 +31,7 @@ Example:
 
 `----------------------`
 
-見える 動詞 999  
+見える 動1 999  
 
 ガ格 555  
 
@@ -40,7 +43,7 @@ Example:
 
 `----------------------`
 
-重なる 動詞 111  
+重なる 動1 111  
 
 ガ格 111  
 
@@ -116,16 +119,21 @@ Overwrite `rinna/pytorch_model.bin` with the generated `.bin` file in fine-tunin
 
 Run validation. 
 
+For grammatical
+
 ```Bash
 ./valid.sh
 ./accuracy_valid.sh
 ```
 
+Use the best epoch for evaluation.
 
 Run evaluation.
 
 Example: running tests on all files in the `grammatical_test_corpus` directory:
-grammatical_eval.sh 10 3（142～154行目までを実行する）
+grammatical_eval.sh 10 3
+
+（142～154行目までを実行する）
 -------------------------------------------------------------------------------------------------------
 ```Bash
 python gpt2_sentence_all_sh_change-bin.py rinna train-ft4_pair_kouzou_10-3 grammatical_test_corpus/*
@@ -140,8 +148,10 @@ Example: checking the accuracy of
 python gpt2_accuracy_all_csv_2.py probs_all_margintrain-ft4_pair_kouzou_10.0-0_test_simple_l4h0v20_unk.json 
 ```
 -------------------------------------------------------------------------------------------------------
+
+
 (The same procedure can be applied for semantic evaluation.)
-semantic_valid.sh
+
 semantic_eval.sh
 
 ### LSTM
@@ -167,34 +177,6 @@ and place them in the `data` directory.
 ./create_grammatical_corpora.sh
 ./create_semantic_corpora.sh
 ```
-
----------------------------------------------------------------------------------
-
-Run `seihu.py` with the two corpora as arguments to create a negative-agreement txt file.
-Example: creating from `train2_100k.txt` and `none_train2_100k.txt`:
-
-```Bash
-cd data
-cp ../../generator/grammatical_training_corpus/train2_100k.txt
-cp ../../generator/grammatical_training_corpus/hibun_corpus/none_train2_100k.txt
-python seihu.py train2_100k.txt none_train2_100k.txt >> negative_agreements.train.txt
-gzip negative_agreements.train.txt
-```
-
-Do this separately for the training corpus (`train2_100k.txt`) and  
-the validation corpus (`valid2_10k.txt`) to create  
-`negative_agreements.train.txt.gz` and `negative_agreements.valid.txt.gz`.
-
-Rename the training and validation corpora:
-
-```Bash
-mv train2_100k.txt train.txt
-mv valid2_10k.txt valid.txt
-cp valid.txt test.txt
-```
----------------------------------------------------------------------------------
-
-
 
 The final contents of the training corpus directory are:
 

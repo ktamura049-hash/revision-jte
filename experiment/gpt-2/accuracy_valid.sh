@@ -24,7 +24,7 @@ do
 done
 
 # 結果の表示
-less $corgram_filename| grep -E "json|総数"
-less $corsem_filename| grep -E "json|総数"
-less $mmgram_filename| grep -E "json|総数"
-less $mmsem_filename| grep -E "json|総数"
+less $corgram_filename| grep -E "json|acc"
+less $corsem_filename| grep -E "json|acc"
+less $mmgram_filename| grep -E "json|acc"
+less $mmsem_filename| grep -E "json|acc"

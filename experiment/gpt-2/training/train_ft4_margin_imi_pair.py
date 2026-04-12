@@ -51,7 +51,7 @@ wrong_path = 'none_' + train_corpus
 save_file_name = "train-ft4_pair_" + pretraining_path.split("/")[-1] + train_data_path.replace("/","").split(".")[-2] + 'token-margin'
 
 #
-save_file_name += '_not-unk_imi'
+save_file_name += '_semantic'
 
 BOS_IDX = gpt_tokenizer.bos_token_id
 EOS_IDX = gpt_tokenizer.eos_token_id

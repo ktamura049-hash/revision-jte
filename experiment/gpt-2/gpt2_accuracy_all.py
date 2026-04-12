@@ -30,7 +30,8 @@ def accuracy(probs):
     trueprob = truecount / count
     print('---')
     print(path)
-    print('総数:',count,'正解数:',truecount,'正解率:',trueprob)
+    #print('総数:',count,'正解数:',truecount,'正解率:',trueprob)
+    print('total_num:',count,'num of corrct:',truecount,'acc:',trueprob)
 
 args = sys.argv
 
