@@ -21,6 +21,7 @@ Language models:
 Place The Kyoto University Case Frame Dictionary (`kaku.xml`) in the `generator` directory and run the following:
 
 ```Bash
+export EXPERIMENT_PATH=PWD/japanese-targeted-evaluation
 cd generator
 python bunrui.py > bunresult3.txt
 ```
@@ -132,23 +133,6 @@ Run evaluation.
 
 Example: running tests on all files in the `grammatical_test_corpus` directory:
 grammatical_eval.sh 10 3
-
-（142～154行目までを実行する）
--------------------------------------------------------------------------------------------------------
-```Bash
-python gpt2_sentence_all_sh_change-bin.py rinna train-ft4_pair_kouzou_10-3 grammatical_test_corpus/*
-```
-
-Check accuracy.
-
-Example: checking the accuracy of  
-`probs_all_margintrain-ft4_pair_kouzou_10.0-0_test_simple_l4h0v20_unk.json`:
-
-```Bash
-python gpt2_accuracy_all_csv_2.py probs_all_margintrain-ft4_pair_kouzou_10.0-0_test_simple_l4h0v20_unk.json 
-```
--------------------------------------------------------------------------------------------------------
-
 
 (The same procedure can be applied for semantic evaluation.)
 
