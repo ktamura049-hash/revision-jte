@@ -8,7 +8,7 @@ from kakuseiri3 import kakuhyou, kakuhenkan, k2i
 from cre_sent import save_sentence, remove_file
 import random
 import copy
-import sys
+import sys,os
 
 #path
 #corpus:入力とする正文のコーパス
@@ -35,7 +35,8 @@ for i in range(10):
 
 #動詞、正しい格助詞、間違った格助詞の取得
 #filename：格フレームコーパス
-filename = './bunresult3.txt'
+dir = os.path.join(os.environ["EXPERIMENT_PATH"],"generator")
+filename = os.path.join(dir,'bunresult.txt')
 #chars：単語のリスト、sei：正しい格助詞のリスト、hi:間違った格助詞のリスト
 chars, sei, hi, taple = kakuhyou(filename)
 #c2i：単語を単語IDに変換。char2index、　i2c：単語IDを単語に変換。index2chars

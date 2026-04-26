@@ -16,14 +16,24 @@ Language models:
 * [rinna japanese-gpt2-medium](https://huggingface.co/rinna/japanese-gpt2-medium)
 * [Noji and Takamura (2020)](https://github.com/aistairc/lm_syntax_negative)
 
+
+## Setting experiment path
+After downloading the repository, set the absolute path of the folder as an environment variable:
+
+```Bash
+cd japanese-targeted-evaluation
+export EXPERIMENT_PATH="$(pwd)"
+```
+
+This ensures that the program can consistently reference the directory regardless of the current working directory.
+
 ## Creating training and test corpora
 
 Place The Kyoto University Case Frame Dictionary (`kaku.xml`) in the `generator` directory and run the following:
 
 ```Bash
-export EXPERIMENT_PATH=PWD/japanese-targeted-evaluation
-cd generator
-python bunrui.py > bunresult3.txt
+cd EXPERIMENT_PATH/generator
+python bunrui.py > bunresult.txt
 ```
 
 This will produce a file like the following (`bunresult3.txt`):
@@ -52,13 +62,13 @@ Example:
 
 `----------------------`
 
-Place `bunresult3.txt` into each directory under `generator`.
+Place `bunresult.txt` into each directory under `generator`.
 
 Run the following command in each folder.
 
 ### grammatical_test_corpus 
 ```Bash
-cd generator/grammatical_test_corpus 
+cd EXPERIMENT_PATH/generator/grammatical_test_corpus 
 ./gen_grammatical_test_corpus.sh
 ```
 
@@ -67,7 +77,7 @@ For grammatical evaluation, the `valid` and `test` directories are created.
 
 ### semantic_test_corpus
 ```Bash
-cd generator/semantic_test_corpus 
+cd EXPERIMENT_PATH/generator/semantic_test_corpus 
 ./gen_semantic_test_corpus.sh
 ```
 
@@ -75,7 +85,7 @@ The created text file is used semantic evaluation.(あとでGPTに聞く)
 
 ### grammatical_training_corpus
 ```Bash
-cd generator/grammatical_training_corpus
+cd EXPERIMENT_PATH/generator/grammatical_training_corpus
 ./gen_grammatical_training_corpus.sh
 ```
 
@@ -83,7 +93,7 @@ Ungrammatical corpora are created in `hibun_corpus`.
 
 ### semantic_training_corpus
 ```Bash
-cd generator/semantic_training_corpus
+cd EXPERIMENT_PATH/generator/semantic_training_corpus
 ./gen_semantic_training_corpus.sh
 ```
 
@@ -95,6 +105,7 @@ Ungrammatical corpora are created in `hibun_corpus`.
 Download `rinna japanese-gpt2-medium` into `experiment/gpt-2/training`:
 
 ```Bash
+cd EXPERIMENT_PATH/experiment/gpt-2/training
 git clone https://huggingface.co/rinna/japanese-gpt2-medium
 ```
 
@@ -103,13 +114,14 @@ Place the original text files and the ungrammatical corpora generated from
 `experiment/gpt-2/training`.
 
 ```Bash
-mv ../grammatical_traning_corpus/*train2_100k.txt ./
-mv ../semantic_traning_corpus/*train2_100k.txt ./
+mv EXPERIMENT_PATH/generator/grammatical_traning_corpus/*train2_100k.txt EXPERIMENT_PATH/experiment/gpt-2/training/
+mv EXPERIMENT_PATH/generator/semantic_traning_corpus/*train2_100k.txt EXPERIMENT_PATH/experiment/gpt-2/training/
 ```
 
 Run the following script to perform fine-tuning:
 
 ```Bash
+cd EXPERIMENT_PATH/experiment/gpt-2/training/
 ./train-margin-pair.sh
 ```
 
@@ -123,6 +135,7 @@ Run validation.
 For grammatical
 
 ```Bash
+cd EXPERIMENT_PATH/experiment/gpt-2/
 ./valid.sh
 ./accuracy_valid.sh
 ```
@@ -131,17 +144,22 @@ Use the best epoch for evaluation.
 
 Run evaluation.
 
-Example: running tests on all files in the `grammatical_test_corpus` directory:
-grammatical_eval.sh 10 3
+Running tests on all files in the `grammatical_test_corpus` directory.
 
-(The same procedure can be applied for semantic evaluation.)
+Example: running tests on margin10 epoch3
 
-semantic_eval.sh
+```Bash
+./grammatical_eval.sh 10 3
+```
+
+The same procedure can be applied for semantic evaluation.
+Apply semantic_eval.sh instead of grammtical_eval.sh
 
 ### LSTM
 Download the model from [Noji and Takamura (2020)](https://github.com/aistairc/lm_syntax_negative):
 
 ```Bash
+cd EXPERIMENT_PATH/experiment/lstm
 git clone https://github.com/aistairc/lm_syntax_negative
 ```
 
@@ -158,6 +176,7 @@ Prepare a corpus of grammatical sentences and a corpus of ungrammatical sentence
 and place them in the `data` directory.
 
 ```Bash
+cd EXPERIMENT_PATH/experiment/lstm/data
 ./create_grammatical_corpora.sh
 ./create_semantic_corpora.sh
 ```
@@ -171,11 +190,12 @@ The final contents of the training corpus directory are:
 * negative_agreements.valid.txt.gz  
 
 ##### Test corpora
-Move the test corpora to `/experiment
-/lstm/`
+Move the test corpora to `/experiment/lstm/`
 
 ```Bash
-cp ../../grammatical_test_corpus/test ./
+cp EXPERIMENT_PATH/generator/grammatical_test_corpus/test EXPERIMENT_PATH/experiment/lstm/grammatical_test_corpus
+mkdir -p EXPERIMENT_PATH/experiment/lstm/semantic_test_corpus
+cp EXPERIMENT_PATH/generator/semantic_test_corpus/test2_test.txt EXPERIMENT_PATH/experiment/lstm/semantic_test_corpus/
 ```
 
 #### Running training

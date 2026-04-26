@@ -16,7 +16,8 @@ import itertools
 import argparse
 
 def main(args):
-    filename = './bunresult3.txt'
+    dir = os.path.join(os.environ["EXPERIMENT_PATH"],"generator")
+    filename = os.path.join(dir,'bunresult.txt')
     with open('./verb.txt') as f:
         #verbs = [s.strip() for s in f.readlines()]
         verbs = []
